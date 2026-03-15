@@ -1,18 +1,18 @@
 name: lint
 on:
   pull_request:
-    types: [opened, reopened, synchronize]
-    paths:
-      - "gui_agents/**"
-      - "tests/**"
-      - ".github/workflows/lint.yml"
+#    types: [opened, reopened, synchronize]
+#    paths:
+#      - "gui_agents/**"
+#      - "tests/**"
+#      - ".github/workflows/lint.yml"
   push:
     branches:
       - main
-    paths:
-      - "gui_agents/**"
-      - "tests/**"
-      - ".github/workflows/lint.yml"
+#    paths:
+#      - "gui_agents/**"
+#      - "tests/**"
+#      - ".github/workflows/lint.yml"
 
 env:
   SUPPORTED_PYTHON_VERSIONS: "3.11"
@@ -39,4 +39,4 @@ jobs:
 
     - name: Run Linter
       run: |
-        black --check gui_agents
+        black --check .
