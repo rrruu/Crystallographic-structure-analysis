@@ -1,0 +1,14 @@
+file|D:\code\python\AgentS_ATOMS\data\file\txt\Data transation.txt
+name|Data transation
+creator|Conifer
+date|Thu Mar 24 13:39:27 CET 2011
+system|triclinic
+superCell|true
+HMSymbol|1|1|0|0| P  1      
+rps|0|   x    ,   y    ,   z    
+lattice|0|0.5
+lattice|1|0.5
+lattice|2|0.5
+lattice|3|90.0
+lattice|4|90.0
+lattice|5|90.0
