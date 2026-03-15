@@ -1,6 +1,6 @@
-# AgentS_ATOMS 项目说明
+# Crystallographic-structure-analysis 项目说明
 
-本文档描述 **AgentS_ATOMS** 项目的实际结构、用途与运行方式，面向本仓库的二次开发与日常使用。  
+本文档描述 **Crystallographic-structure-analysis** 项目的实际结构、用途与运行方式，面向本仓库的二次开发与日常使用。  
 项目根目录下的 `README_agents.md` 为 [simular-ai/Agent-S](https://github.com/simular-ai/Agent-S) 原仓库说明；**本文件（README.md）为基于当前项目实际情况编写的说明。**
 
 ---
