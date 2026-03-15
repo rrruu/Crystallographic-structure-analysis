@@ -25,7 +25,7 @@ SUB_TASKS_STAGE_1 = [
         "desc": "环境初始化",
     },
     {
-        "goal": "在 ATOMS 软件中点击 'Open'。在弹出的对话框地址栏输入 'C:\\Users\\Lenovo\\Desktop\\演示8' 并回车。确认正确进入该路径后，加载文件 'ICSD_CollCode103903.str'，直到结构图显示在主窗口中。",
+        "goal": "在 ATOMS 软件中点击 'Open'。在弹出的对话框地址栏输入 'D:\\yan\\agent\\第一阶段\\演示\\演示8' 并回车。确认正确进入该路径后，加载文件 'ICSD_CollCode103903.str'，直到结构图显示在主窗口中。",
         "desc": "数据加载",
     },
     {
@@ -41,7 +41,7 @@ SUB_TASKS_STAGE_1 = [
         "desc": "背景与视觉优化",
     },
     {
-        "goal": "保存结果：通过 'File' -> 'Save Graphics Window' 选 '.BMP' 格式。在保存对话框地址栏输入 'D:\\code\\python\\AgentS_ATOMS\\utils\\bmp' 并回车。确认正确进入该路径后，点击右下角 '保存' 按钮。",
+        "goal": "保存结果：通过 'File' -> 'Save Graphics Window' 选 '.BMP' 格式。在保存对话框地址栏输入 'D:\\code\\projects\\innoclaw\\data\\projects\\Crystallographic-structure-analysis-main\\utils\\bmp' 并回车。确认正确进入该路径后，点击右下角 '保存' 按钮。",
         "desc": "结果导出",
     },
 ]

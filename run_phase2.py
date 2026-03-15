@@ -58,11 +58,11 @@ SUB_TASKS_STAGE_2 = [
 # 阶段 3：用Data transaction.txt打开csv文件
 SUB_TASKS_STAGE_3 = [
     {
-        "goal": "启动位于 'D:\\code\\python\\AgentS_ATOMS\\data\\file\\xlsx\\Data transation.xlsx' 的 Data transation.xlsx 文件。",
+        "goal": "启动位于 'D:\\code\\projects\\innoclaw\\data\\projects\\Crystallographic-structure-analysis-main\\data\\file\\xlsx\\Data transation.xlsx' 的 Data transation.xlsx 文件。",
         "desc": "打开xlsx文件",
     },
     {
-        "goal": "在 '文件' 菜单下打开 '打开' 选项，在弹出的对话框地址栏输入 'D:\\code\\python\\AgentS_ATOMS\\data\\file\\csv' 地址并回车。确认正确进入该路径后，选择文件类型为 '所有文件' ，打开文件 'processed_data.csv' 。",
+        "goal": "在 '文件' 菜单下打开 '打开' 选项，在弹出的对话框地址栏输入 'D:\\code\\projects\\innoclaw\\data\\projects\\Crystallographic-structure-analysis-main\\data\\file\\csv' 地址并回车。确认正确进入该路径后，选择文件类型为 '所有文件' ，打开文件 'processed_data.csv' 。",
         "desc": "在xlsx文件中打开csv文件",
     },
     {
@@ -70,7 +70,7 @@ SUB_TASKS_STAGE_3 = [
         "desc": "复制csv文件中全部数据",
     },
     {
-        "goal": "打开 'D:\\code\\python\\AgentS_ATOMS\\data\\file\\txt\\Data transation.txt'，在文件末尾的新一行中粘贴刚刚在'processed_data.csv' 文件中复制的内容。",
+        "goal": "打开 'D:\\code\\projects\\innoclaw\\data\\projects\\Crystallographic-structure-analysis-main\\data\\file\\txt\\Data transation.txt'，在文件末尾的新一行中粘贴刚刚在'processed_data.csv' 文件中复制的内容。",
         "desc": "将数据追加到目标文本文件",
     },
     {
