@@ -69,9 +69,7 @@ def call_llm_safe(
             print(f"[call_llm_safe] attempt={attempt}")
 
             response = agent.get_response(
-                temperature=temperature,
-                use_thinking=use_thinking,
-                **kwargs
+                temperature=temperature, use_thinking=use_thinking, **kwargs
             )
 
             assert response is not None, "Response from agent should not be None"
@@ -88,7 +86,6 @@ def call_llm_safe(
         time.sleep(1.0)
 
     return response if response is not None else ""
-
 
 
 def call_llm_formatted(generator, format_checkers, **kwargs):

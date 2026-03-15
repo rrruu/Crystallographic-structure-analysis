@@ -269,9 +269,7 @@ class OSWorldACI(ACI):
         )
 
         self.grounding_model.add_message(
-            text_content=prompt,
-            image_content=obs["screenshot"],
-            put_text_last=True
+            text_content=prompt, image_content=obs["screenshot"], put_text_last=True
         )
 
         # Generate response
@@ -289,8 +287,6 @@ class OSWorldACI(ACI):
         # x, y = int(m.group(1)), int(m.group(2))
         # return [x, y]
 
-
-
         # 修改后 (新代码 - 兼容更多格式):
         # 解释：同时匹配 <point>x y</point> 或者 <x y> 甚至纯数字 x y
         m = re.search(r"(?:<point>)?\s*<?(\d+)\s+(\d+)>?(?:\s*</point>)?", response)
@@ -301,17 +297,11 @@ class OSWorldACI(ACI):
             if len(numericals) >= 2:
                 x, y = int(numericals[0]), int(numericals[1])
             else:
-                raise ValueError(
-                    f"Grounding response invalid. Got: {response[:200]!r}"
-                )
+                raise ValueError(f"Grounding response invalid. Got: {response[:200]!r}")
         else:
             x, y = int(m.group(1)), int(m.group(2))
 
         return [x, y]
-
-
-
-
 
     # Calls pytesseract to generate word level bounding boxes for text grounding
     def get_ocr_elements(self, b64_image_data: str) -> Tuple[str, List]:
