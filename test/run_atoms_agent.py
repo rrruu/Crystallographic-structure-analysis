@@ -24,7 +24,7 @@ engine_params = {
     "model": "gpt-4o",
     "api_key": API_KEY,
     "base_url": BASE_URL,
-    "temperature": 0.0
+    "temperature": 0.0,
 }
 
 # 2. 接地模型配置 (负责识别屏幕坐标)
@@ -35,7 +35,7 @@ engine_params_for_grounding = {
     "api_key": API_KEY,
     "base_url": BASE_URL,
     "grounding_width": 1920,
-    "grounding_height": 1080
+    "grounding_height": 1080,
 }
 
 # ================= 初始化 Agent =================
@@ -47,7 +47,7 @@ grounding_agent = OSWorldACI(
     engine_params_for_generation=engine_params,
     engine_params_for_grounding=engine_params_for_grounding,
     width=1920,
-    height=1080
+    height=1080,
 )
 
 print(">>> [2/3] 正在初始化主智能体 (AgentS3)...")
@@ -58,7 +58,7 @@ agent = AgentS3(
     grounding_agent,  # 第2个参数：视觉对象
     platform="windows",
     max_trajectory_length=8,
-    enable_reflection=True
+    enable_reflection=True,
 )
 
 # ================= 任务执行循环 =================

@@ -16,7 +16,7 @@ def automate_atoms_open():
     main_win = app.window(title="ATOMS Startup Window")
 
     print(">>> 等待窗口加载...")
-    main_win.wait('visible', timeout=20)
+    main_win.wait("visible", timeout=20)
 
     # ==========================================================
     # 关键操作：点击 Open 按钮
@@ -45,7 +45,7 @@ def automate_atoms_open():
     open_dialog = app.window(title="Open an ATOMS Data File")
 
     print(">>> 等待弹窗出现...")
-    open_dialog.wait('visible', timeout=10)
+    open_dialog.wait("visible", timeout=10)
 
     print(f">>> [3/3] 选择文件: {target_filename} 并打开...")
 

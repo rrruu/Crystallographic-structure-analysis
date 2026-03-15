@@ -15,35 +15,35 @@ from gui_agents.s3.agents.agent_s import AgentS3
 from config import API_KEY, BASE_URL, check_api_config
 
 SCREEN_WIDTH, SCREEN_HEIGHT = 1920, 1080
-GROUNDING_DIM =1000
+GROUNDING_DIM = 1000
 
 # ================= 2. 自动化任务流配置 =================
 # 阶段 1：初始设置与保存图片 (原有逻辑)
 SUB_TASKS_STAGE_1 = [
     {
         "goal": "启动位于 'D:\\ATOMS65\\Eragon.exe' 的 ATOMS 软件，并确保主窗口处于最大化状态。",
-        "desc": "环境初始化"
+        "desc": "环境初始化",
     },
     {
         "goal": "在 ATOMS 软件中点击 'Open'。在弹出的对话框地址栏输入 'C:\\Users\\Lenovo\\Desktop\\演示8' 并回车。确认正确进入该路径后，加载文件 'ICSD_CollCode103903.str'，直到结构图显示在主窗口中。",
-        "desc": "数据加载"
+        "desc": "数据加载",
     },
     {
         "goal": "配置物理边界：在 'Input1' 菜单下打开 'Boundary' 选项，将模式更改为 'Sphere'，并将 'Radius' 数值修改为 45。完成后确认并返回主界面。",
-        "desc": "边界配置"
+        "desc": "边界配置",
     },
     {
         "goal": "空间取向调整：打开顶部 'Rotation' 菜单，选择 'Align Face or Vector'。重点：确保选中左侧的 'Vector' 单选按钮，并在 'Indices of vector (uvw)' 下方的三个输入框中依次填入 1、0、0。完成后点击右上方 OK 确认。",
-        "desc": "取向设置"
+        "desc": "取向设置",
     },
     {
         "goal": "视图效果优化：首先进入 'Input2' 菜单关闭 'Perspective' 视图选项。随后再次进入 'Input2' 打开 'Background Color' 窗口，将Background Color设置为白色（255 255 255）。操作路径：点击窗口右侧的 'Select Color...' 按钮，在弹出的调色板中直接点击选中255 255 255左侧单选按钮，点击 OK 返回后再在背景窗口点击 OK。",
-        "desc": "背景与视觉优化"
+        "desc": "背景与视觉优化",
     },
     {
         "goal": "保存结果：通过 'File' -> 'Save Graphics Window' 选 '.BMP' 格式。在保存对话框地址栏输入 'D:\\code\\python\\AgentS_ATOMS\\utils\\bmp' 并回车。确认正确进入该路径后，点击右下角 '保存' 按钮。",
-        "desc": "结果导出"
-    }
+        "desc": "结果导出",
+    },
 ]
 
 
@@ -62,14 +62,17 @@ def get_stage_2_tasks(angle_val):
         # {"goal": f"双击界面左侧的角度输入框。在输入框内填入数字 76 。完成后，点击输入框上方代表逆时针旋转的‘向左弯’箭头按钮。",
         #  "desc": "旋转修正"
         # },
-        {"goal": f"双击界面左侧的角度输入框。在输入框内填入数字 {abs_angle} 。完成后，点击输入框上方代表顺时针旋转的‘向右弯’箭头按钮。",
-         "desc": "旋转修正"
+        {
+            "goal": f"双击界面左侧的角度输入框。在输入框内填入数字 {abs_angle} 。完成后，点击输入框上方代表顺时针旋转的‘向右弯’箭头按钮。",
+            "desc": "旋转修正",
         },
         # {"goal": f"在界面左侧的角度输入框内‘双击’以选中已有数值，随后直接键盘输入{angle_val}。注意：严禁使用 'Ctrl+A' 快捷键，因为它会触发 About 窗口。完成后，点击输入框上方代表顺时针旋转的‘向右弯’箭头按钮。",
         #  "desc": "安全修正旋转"
         # },
-        {"goal": "在 'Input2' 菜单下打开 'Centering and Displacements'，选中 'No centering or displacements'，点击 OK。",
-         "desc": "关闭自动中心"}
+        {
+            "goal": "在 'Input2' 菜单下打开 'Centering and Displacements'，选中 'No centering or displacements'，点击 OK。",
+            "desc": "关闭自动中心",
+        },
     ]
 
 
@@ -86,30 +89,38 @@ def run_python_script(script_name, args=[]):
 
 
 def init_agent():
-    engine_params = {"engine_type": "openai",
-                     "model": "gpt-4o",
-                     # "model": "Pro/Qwen/Qwen2.5-VL-7B-Instruct",
-                     "api_key": API_KEY,
-                     "base_url": BASE_URL,
-                     "temperature": 0.01}
-    engine_params_grounding = {"engine_type": "openai",
-                               "model": "doubao-1-5-ui-tars-250428",
-                               "api_key": API_KEY,
-                               "base_url": BASE_URL,
-                               "grounding_width": GROUNDING_DIM,
-                               "grounding_height": GROUNDING_DIM,
-                               "temperature": 0.01}
-    grounding_agent = OSWorldACI(env=None,
-                                 platform="windows",
-                                 engine_params_for_generation=engine_params,
-                                 engine_params_for_grounding=engine_params_grounding,
-                                 width=SCREEN_WIDTH,
-                                 height=SCREEN_HEIGHT)
-    return AgentS3(engine_params,
-                   grounding_agent,
-                   platform="windows",
-                   max_trajectory_length=8,
-                   enable_reflection=True)
+    engine_params = {
+        "engine_type": "openai",
+        "model": "gpt-4o",
+        # "model": "Pro/Qwen/Qwen2.5-VL-7B-Instruct",
+        "api_key": API_KEY,
+        "base_url": BASE_URL,
+        "temperature": 0.01,
+    }
+    engine_params_grounding = {
+        "engine_type": "openai",
+        "model": "doubao-1-5-ui-tars-250428",
+        "api_key": API_KEY,
+        "base_url": BASE_URL,
+        "grounding_width": GROUNDING_DIM,
+        "grounding_height": GROUNDING_DIM,
+        "temperature": 0.01,
+    }
+    grounding_agent = OSWorldACI(
+        env=None,
+        platform="windows",
+        engine_params_for_generation=engine_params,
+        engine_params_for_grounding=engine_params_grounding,
+        width=SCREEN_WIDTH,
+        height=SCREEN_HEIGHT,
+    )
+    return AgentS3(
+        engine_params,
+        grounding_agent,
+        platform="windows",
+        max_trajectory_length=8,
+        enable_reflection=True,
+    )
 
 
 def execute_agent_tasks(tasks):
@@ -132,7 +143,9 @@ def execute_agent_tasks(tasks):
                 obs = {"screenshot": buffered.getvalue()}
 
                 # 获取 Agent 预测
-                info, action = agent.predict(instruction=f"{task['goal']}\n完成请输出 DONE", observation=obs)
+                info, action = agent.predict(
+                    instruction=f"{task['goal']}\n完成请输出 DONE", observation=obs
+                )
 
                 if not action:
                     print("  [警告] Agent 未能生成动作，可能正在思考或已卡住。")
@@ -140,7 +153,6 @@ def execute_agent_tasks(tasks):
 
                 # 详细打印 Agent 生成的每一行操作代码
                 for act_code in action:
-
 
                     print(f"  [指令确认] >>> {act_code}")
 
@@ -150,7 +162,10 @@ def execute_agent_tasks(tasks):
                         break
 
                     # 检查并执行 GUI 操作
-                    if any(kw in act_code for kw in ["pyautogui", "keyboard", "mouse", "time"]):
+                    if any(
+                        kw in act_code
+                        for kw in ["pyautogui", "keyboard", "mouse", "time"]
+                    ):
                         print(f"  [正在执行] 正在调用底层接口执行上述代码...")
                         exec(act_code)
                         print("  [执行成功] 操作已下达。")
@@ -162,9 +177,6 @@ def execute_agent_tasks(tasks):
                 print(f"  [严重错误] 在第 {step} 步发生异常: {e}")
                 traceback.print_exc()
                 break
-
-
-
 
             # step += 1
             # screenshot = pyautogui.screenshot()
@@ -202,7 +214,9 @@ def execute_agent_tasks_withoutctrla(tasks):
                 obs = {"screenshot": buffered.getvalue()}
 
                 # 获取 Agent 预测
-                info, action = agent.predict(instruction=f"{task['goal']}\n完成请输出 DONE", observation=obs)
+                info, action = agent.predict(
+                    instruction=f"{task['goal']}\n完成请输出 DONE", observation=obs
+                )
 
                 if not action:
                     print("  [警告] Agent 未能生成动作，可能正在思考或已卡住。")
@@ -265,12 +279,18 @@ def execute_agent_tasks_withoutctrla(tasks):
                     #
 
                     # --- 1. 拦截 Ctrl+A 并替换为双击选中+退格 ---
-                    if "ctrl" in act_code.lower() and ("'a'" in act_code.lower() or '"a"' in act_code.lower()):
+                    if "ctrl" in act_code.lower() and (
+                        "'a'" in act_code.lower() or '"a"' in act_code.lower()
+                    ):
                         print(f"  [安全过滤] 已剔除 Ctrl+A，替换为双击清除。")
-                        act_code = act_code.replace("pyautogui.hotkey('ctrl', 'a')",
-                                                    "pyautogui.doubleClick(); pyautogui.press(['backspace']*5)")
-                        act_code = act_code.replace('pyautogui.hotkey("ctrl", "a")',
-                                                    "pyautogui.doubleClick(); pyautogui.press(['backspace']*5)")
+                        act_code = act_code.replace(
+                            "pyautogui.hotkey('ctrl', 'a')",
+                            "pyautogui.doubleClick(); pyautogui.press(['backspace']*5)",
+                        )
+                        act_code = act_code.replace(
+                            'pyautogui.hotkey("ctrl", "a")',
+                            "pyautogui.doubleClick(); pyautogui.press(['backspace']*5)",
+                        )
 
                     # --- 2. 核心改进：将 write 转换为 复制+粘贴 (解决丢字符问题) ---
                     if "pyautogui.write" in act_code:
@@ -278,15 +298,15 @@ def execute_agent_tasks_withoutctrla(tasks):
                         # 提取 write 括号中的内容
                         match = re.search(r"pyautogui\.write\((.*?)\)", act_code)
                         if match:
-                            content = match.group(1).split(',')[0].strip("'\" ")
+                            content = match.group(1).split(",")[0].strip("'\" ")
                             # 构建新指令：先复制到剪贴板，再执行 Ctrl+V
                             paste_code = f"pyperclip.copy('{content}'); pyautogui.hotkey('ctrl', 'v')"
-                            act_code = re.sub(r"pyautogui\.write\(.*?\)", paste_code, act_code)
+                            act_code = re.sub(
+                                r"pyautogui\.write\(.*?\)", paste_code, act_code
+                            )
 
                     # --- 3. 注入延迟，确保软件响应 ---
                     act_code = act_code.replace(");", "); time.sleep(0.5);")
-
-
 
                     print(f"  [指令确认] >>> {act_code}")
 
@@ -296,7 +316,10 @@ def execute_agent_tasks_withoutctrla(tasks):
                         break
 
                     # 检查并执行 GUI 操作
-                    if any(kw in act_code for kw in ["pyautogui", "keyboard", "mouse", "time"]):
+                    if any(
+                        kw in act_code
+                        for kw in ["pyautogui", "keyboard", "mouse", "time"]
+                    ):
                         print(f"  [正在执行] 正在调用底层接口执行上述代码...")
                         exec(act_code)
                         print("  [执行成功] 操作已下达。")
@@ -308,9 +331,6 @@ def execute_agent_tasks_withoutctrla(tasks):
                 print(f"  [严重错误] 在第 {step} 步发生异常: {e}")
                 traceback.print_exc()
                 break
-
-
-
 
             # step += 1
             # screenshot = pyautogui.screenshot()
@@ -358,15 +378,26 @@ def main():
         print(f"\n>>> 开始切割部分: {part}")
         # Agent: 开启 Delete Tool
         execute_agent_tasks(
-            [{"goal": "点击主界面右侧的 'Delete Tool' 按钮，在弹出的提示窗口中点击 '确定' 以开始切割模式。",
-              "desc": "启动切割工具"}])
+            [
+                {
+                    "goal": "点击主界面右侧的 'Delete Tool' 按钮，在弹出的提示窗口中点击 '确定' 以开始切割模式。",
+                    "desc": "启动切割工具",
+                }
+            ]
+        )
 
         # 脚本: 执行路径点击
         run_python_script("click_executor_3.py", [part])
 
         # Agent: 确认切割
         execute_agent_tasks(
-            [{"goal": "点击界面中出现的 '确认' 按钮以完成本次切割操作。", "desc": "确认切割成果"}])
+            [
+                {
+                    "goal": "点击界面中出现的 '确认' 按钮以完成本次切割操作。",
+                    "desc": "确认切割成果",
+                }
+            ]
+        )
         time.sleep(2)
 
     print("\n>>> [完成] 全流程自动化已结束。")

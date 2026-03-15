@@ -59,18 +59,24 @@ def execute_task(part_name):
     df_p = pd.read_csv(PURPLE_CSV)
 
     # 2. 提取紫色锚点映射
-    p_map = {row['type']: (row['screen_x'], row['screen_y']) for _, row in df_p.iterrows()}
-    ml = p_map['purple_ML']
-    mr = p_map['purple_MR']
-    tl, tr = p_map['purple_TL'], p_map['purple_TR']
-    bl, br = p_map['purple_BL'], p_map['purple_BR']
+    p_map = {
+        row["type"]: (row["screen_x"], row["screen_y"]) for _, row in df_p.iterrows()
+    }
+    ml = p_map["purple_ML"]
+    mr = p_map["purple_MR"]
+    tl, tr = p_map["purple_TL"], p_map["purple_TR"]
+    bl, br = p_map["purple_BL"], p_map["purple_BR"]
 
     # 计算上下分界线
     split_y = (ml[1] + mr[1]) / 2
 
     # 3. 划分点集并规划路径
-    upper_blue_list = df_b[df_b['screen_y'] < split_y][['screen_x', 'screen_y']].values.tolist()
-    lower_blue_list = df_b[df_b['screen_y'] >= split_y][['screen_x', 'screen_y']].values.tolist()
+    upper_blue_list = df_b[df_b["screen_y"] < split_y][
+        ["screen_x", "screen_y"]
+    ].values.tolist()
+    lower_blue_list = df_b[df_b["screen_y"] >= split_y][
+        ["screen_x", "screen_y"]
+    ].values.tolist()
 
     upper_blue_path = build_nearest_path(upper_blue_list)
     lower_blue_path = build_nearest_path(lower_blue_list)
@@ -81,15 +87,23 @@ def execute_task(part_name):
 
     if part_name == "A":
         # 任务 A: 左中紫色点小切割
-        nearest_upper = upper_blue_path[np.argmin([get_distance(ml, p) for p in upper_blue_path])]
-        nearest_lower = lower_blue_path[np.argmin([get_distance(ml, p) for p in lower_blue_path])]
+        nearest_upper = upper_blue_path[
+            np.argmin([get_distance(ml, p) for p in upper_blue_path])
+        ]
+        nearest_lower = lower_blue_path[
+            np.argmin([get_distance(ml, p) for p in lower_blue_path])
+        ]
         sequence = [ml, nearest_upper, nearest_lower]
         close_pt = ml
 
     elif part_name == "B":
         # 任务 B: 右中紫色点小切割
-        nearest_upper = upper_blue_path[np.argmin([get_distance(mr, p) for p in upper_blue_path])]
-        nearest_lower = lower_blue_path[np.argmin([get_distance(mr, p) for p in lower_blue_path])]
+        nearest_upper = upper_blue_path[
+            np.argmin([get_distance(mr, p) for p in upper_blue_path])
+        ]
+        nearest_lower = lower_blue_path[
+            np.argmin([get_distance(mr, p) for p in lower_blue_path])
+        ]
         sequence = [mr, nearest_upper, nearest_lower]
         close_pt = mr
 

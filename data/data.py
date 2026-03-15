@@ -1,4 +1,4 @@
-#实现将.xyz文件中所有数据先+50再/100，避免负数
+# 实现将.xyz文件中所有数据先+50再/100，避免负数
 import os
 
 
@@ -7,16 +7,17 @@ def process_xyz_file():
     # 获取当前 data.py 所在的目录
     base_dir = os.path.dirname(os.path.abspath(__file__))
     # 拼接输入文件的完整路径: 项目根目录/file/untitled.xyz
-    input_path = os.path.join(base_dir, 'file', 'xyz', 'untitled.xyz')
+    input_path = os.path.join(base_dir, "file", "xyz", "untitled.xyz")
     # 设置输出文件的路径: 项目根目录/file/processed_untitled.xyz (生成一个新文件)
-    output_path = os.path.join(base_dir, 'file', 'xyz', 'processed.xyz')
+    output_path = os.path.join(base_dir, "file", "xyz", "processed.xyz")
 
     print(f"正在读取文件: {input_path}")
 
     # 2. 打开文件进行处理
     try:
-        with open(input_path, 'r', encoding='utf-8') as f_in, \
-                open(output_path, 'w', encoding='utf-8') as f_out:
+        with open(input_path, "r", encoding="utf-8") as f_in, open(
+            output_path, "w", encoding="utf-8"
+        ) as f_out:
 
             lines = f_in.readlines()
 

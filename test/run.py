@@ -24,7 +24,7 @@ engine_params = {
     "model": "gpt-4o",
     "api_key": API_KEY,
     "base_url": BASE_URL,
-    "temperature": 0.01
+    "temperature": 0.01,
 }
 
 # 2. 接地模型配置 (负责识别屏幕坐标)
@@ -35,9 +35,9 @@ engine_params_for_grounding = {
     "model": "doubao-1-5-ui-tars-250428",
     "api_key": API_KEY,
     "base_url": BASE_URL,
-    "grounding_width": 1000,   # 修改：从 1920 改为 1000
-    "grounding_height": 1000,   # 修改：从 1080 改为 1000
-    "temperature": 0.01
+    "grounding_width": 1000,  # 修改：从 1920 改为 1000
+    "grounding_height": 1000,  # 修改：从 1080 改为 1000
+    "temperature": 0.01,
 }
 
 # ================= 初始化 Agent =================
@@ -50,7 +50,7 @@ grounding_agent = OSWorldACI(
     engine_params_for_generation=engine_params,
     engine_params_for_grounding=engine_params_for_grounding,
     width=1920,
-    height=1080
+    height=1080,
 )
 
 print(">>> [2/3] 正在初始化主智能体 (AgentS3)...")
@@ -61,7 +61,7 @@ agent = AgentS3(
     grounding_agent,  # 第2个参数：视觉对象
     platform="windows",
     max_trajectory_length=8,
-    enable_reflection=True
+    enable_reflection=True,
 )
 
 # ================= 任务执行循环 =================
@@ -296,7 +296,12 @@ try:
         for act_code in action:
             print(f">>> 执行代码: {act_code}")
             # 安全检查：只允许执行 gui_agents 或 pyautogui 相关的代码，防止意外
-            if "pyautogui" in act_code or "keyboard" in act_code or "mouse" in act_code or "time" in act_code:
+            if (
+                "pyautogui" in act_code
+                or "keyboard" in act_code
+                or "mouse" in act_code
+                or "time" in act_code
+            ):
                 try:
                     exec(act_code)
                 except Exception as exec_err:
@@ -313,8 +318,6 @@ try:
 except Exception as e:
     print(f"\n>>> 发生严重错误: {e}")
     traceback.print_exc()
-
-
 
 
 # ================= ⚡ 新增：后置硬编码操作 (替代原步骤 16) =================

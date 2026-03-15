@@ -17,9 +17,9 @@ ROOT = Path(__file__).resolve().parent
 SRC_IMAGE_PATH = ROOT / "images" / "origin" / "1.png"
 if SRC_IMAGE_PATH.exists():
     img_temp = cv2.imread(str(SRC_IMAGE_PATH))
-    SRC_IMAGE_H, SRC_IMAGE_W = img_temp.shape[:2] # 自动获取
+    SRC_IMAGE_H, SRC_IMAGE_W = img_temp.shape[:2]  # 自动获取
 else:
-    SRC_IMAGE_W, SRC_IMAGE_H = 1718, 997 # 兜底值
+    SRC_IMAGE_W, SRC_IMAGE_H = 1718, 997  # 兜底值
 
 IN_BLUE_CSV = ROOT / "results" / "blue_points_in_source_2.csv"
 OUT_BLUE_SCREEN_CSV = ROOT / "results" / "final_screen_coords_blue.csv"
@@ -57,7 +57,7 @@ def get_atoms_realtime_workspace():
         {"type": "purple_ML", "screen_x": x + margin, "screen_y": y + h // 2},
         {"type": "purple_MR", "screen_x": x + w - margin, "screen_y": y + h // 2},
         {"type": "purple_BL", "screen_x": x + margin, "screen_y": y + h - margin},
-        {"type": "purple_BR", "screen_x": x + w - margin, "screen_y": y + h - margin}
+        {"type": "purple_BR", "screen_x": x + w - margin, "screen_y": y + h - margin},
     ]
 
     return (x, y, w, h), anchors_data
@@ -66,7 +66,8 @@ def get_atoms_realtime_workspace():
 def run_integration():
     # 执行实时检测
     detect_res = get_atoms_realtime_workspace()
-    if not detect_res: return
+    if not detect_res:
+        return
 
     (x_offset, y_offset, w_screen, h_screen), anchors = detect_res
 
@@ -102,8 +103,8 @@ def run_integration():
 
     # 线性映射变换
     df_blue_out = pd.DataFrame()
-    df_blue_out['screen_x'] = df_blue_in['src_x'] * r_w + x_offset
-    df_blue_out['screen_y'] = df_blue_in['src_y'] * r_h + y_offset
+    df_blue_out["screen_x"] = df_blue_in["src_x"] * r_w + x_offset
+    df_blue_out["screen_y"] = df_blue_in["src_y"] * r_h + y_offset
 
     # 导出蓝色点屏幕坐标
     df_blue_out.to_csv(OUT_BLUE_SCREEN_CSV, index=False)

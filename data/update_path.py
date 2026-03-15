@@ -1,4 +1,4 @@
-#更新Data transation.txt文件的首行地址，更新为该文件在电脑中的绝对地址
+# 更新Data transation.txt文件的首行地址，更新为该文件在电脑中的绝对地址
 import os
 
 
@@ -8,7 +8,7 @@ def update_file_path():
     base_dir = os.path.dirname(os.path.abspath(__file__))
 
     # 拼接得到目标文件的实际路径：根目录/file/txt/Data transation.txt
-    target_file_path = os.path.join(base_dir, 'file', 'txt', 'Data transation.txt')
+    target_file_path = os.path.join(base_dir, "file", "txt", "Data transation.txt")
 
     print(f"正在处理文件: {target_file_path}")
 
@@ -18,7 +18,7 @@ def update_file_path():
             print(f"错误：在路径 {target_file_path} 下找不到文件。")
             return
 
-        with open(target_file_path, 'r', encoding='utf-8') as f:
+        with open(target_file_path, "r", encoding="utf-8") as f:
             lines = f.readlines()
 
         if len(lines) > 0:
@@ -33,7 +33,7 @@ def update_file_path():
             lines[0] = new_first_line
 
             # 4. 将修改后的内容写回文件
-            with open(target_file_path, 'w', encoding='utf-8') as f:
+            with open(target_file_path, "w", encoding="utf-8") as f:
                 f.writelines(lines)
 
             print("路径更新成功！")
