@@ -232,7 +232,7 @@ AGENTS_ATOMS_BASE_URL=http://34.13.73.248:3888/v1
 
 ### 5.7 路径与任务配置
 
-以下列出**需要按本机环境修改**的路径与任务文案。若将整个项目克隆到其他盘符或目录，请把所有出现的 `D:\code\python\AgentS_ATOMS` 替换为你的项目根目录实际路径。
+以下列出**需要按本机环境修改**的路径与任务文案。若将整个项目克隆到其他盘符或目录，请把所有出现的 `D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main` 替换为你的项目根目录实际路径。
 
 ---
 
@@ -241,9 +241,9 @@ AGENTS_ATOMS_BASE_URL=http://34.13.73.248:3888/v1
 | 位置 | 说明 | 当前示例 / 变量 |
 |------|------|------------------|
 | **SUB_TASKS_STAGE_1** 第 1 条 `goal` | ATOMS 软件可执行文件路径 | `D:\ATOMS65\Eragon.exe` |
-| **SUB_TASKS_STAGE_1** 第 2 条 `goal` | 在 ATOMS 中“打开文件”时输入的**目录路径** | `C:\Users\Lenovo\Desktop\演示8` |
+| **SUB_TASKS_STAGE_1** 第 2 条 `goal` | 在 ATOMS 中“打开文件”时输入的**目录路径** | `D:\yan\agent\第一阶段\演示\演示8` |
 | 同上 | 要加载的 **.str 结构文件名** | `ICSD_CollCode103903.str` |
-| **SUB_TASKS_STAGE_1** 第 6 条 `goal` | 保存 BMP 图形时在保存对话框输入的**目录路径** | `D:\code\python\AgentS_ATOMS\utils\bmp` |
+| **SUB_TASKS_STAGE_1** 第 6 条 `goal` | 保存 BMP 图形时在保存对话框输入的**目录路径** | `D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main\utils\bmp` |
 
 - **角度结果读取**：脚本会从 `utils/results/angle.txt` 读取旋转角度（由 `utils/match.py` 生成）。该路径由 `Path(__file__).parent / "utils" / "results" / "angle.txt"` 得到，只要项目结构不变、未移动项目根目录，一般**无需修改**。
 
@@ -254,12 +254,12 @@ AGENTS_ATOMS_BASE_URL=http://34.13.73.248:3888/v1
 | 位置 | 说明 | 当前示例 / 变量 |
 |------|------|------------------|
 | **SUB_TASKS_STAGE_1** 第 1 条 `goal` | 阶段 1 要“启动/打开”的**文件路径**（当前为 .str 文件） | `D:\yan\agent\4\Pd2Ga-400-a-02.str` |
-| **SUB_TASKS_STAGE_2** 第 2 条 `goal` | 导出 xyz 时在保存对话框输入的**目录路径** | `D:\code\python\AgentS_ATOMS\data\file\xyz` |
-| **SUB_TASKS_STAGE_3** 第 1 条 `goal` | 要打开的 **Data transation.xlsx** 的完整路径 | `D:\code\python\AgentS_ATOMS\data\file\xlsx\Data transation.xlsx` |
-| **SUB_TASKS_STAGE_3** 第 2 条 `goal` | 在 xlsx/文件菜单“打开”时输入的 **csv 所在目录** | `D:\code\python\AgentS_ATOMS\data\file\csv` |
-| **SUB_TASKS_STAGE_3** 第 4 条 `goal` | 要打开的 **Data transation.txt** 的完整路径 | `D:\code\python\AgentS_ATOMS\data\file\txt\Data transation.txt` |
+| **SUB_TASKS_STAGE_2** 第 2 条 `goal` | 导出 xyz 时在保存对话框输入的**目录路径** | `D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main\data\file\xyz` |
+| **SUB_TASKS_STAGE_3** 第 1 条 `goal` | 要打开的 **Data transation.xlsx** 的完整路径 | `D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main\data\file\xlsx\Data transation.xlsx` |
+| **SUB_TASKS_STAGE_3** 第 2 条 `goal` | 在 xlsx/文件菜单“打开”时输入的 **csv 所在目录** | `D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main\data\file\csv` |
+| **SUB_TASKS_STAGE_3** 第 4 条 `goal` | 要打开的 **Data transation.txt** 的完整路径 | `D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main\data\file\txt\Data transation.txt` |
 
-- 若项目根目录变更，上述所有 `D:\code\python\AgentS_ATOMS` 均需改为新路径；文件名（如 `Data transation.xlsx`、`processed_data.csv`、`Data transation.txt`）若在脚本的 `goal` 文案中出现，也需与本地实际文件名一致。
+- 若项目根目录变更，上述所有 `D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main` 均需改为新路径；文件名（如 `Data transation.xlsx`、`processed_data.csv`、`Data transation.txt`）若在脚本的 `goal` 文案中出现，也需与本地实际文件名一致。
 
 ---
 
@@ -290,7 +290,7 @@ AGENTS_ATOMS_BASE_URL=http://34.13.73.248:3888/v1
 
 #### 五、修改时的注意点
 
-1. **统一替换项目根路径**：若项目不在 `D:\code\python\AgentS_ATOMS`，在 **run_phase1.py** 与 **run_phase2.py** 中全文搜索 `D:\code\python\AgentS_ATOMS`，替换为你的项目根目录（注意 Windows 下反斜杠在字符串中须写为 `\\` 或使用原始字符串 `r"..."`）。
+1. **统一替换项目根路径**：若项目不在 `D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main`，在 **run_phase1.py** 与 **run_phase2.py** 中全文搜索 `D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main`，替换为你的项目根目录（注意 Windows 下反斜杠在字符串中须写为 `\\` 或使用原始字符串 `r"..."`）。
 2. **Agent 任务文案与真实路径一致**：`SUB_TASKS_STAGE_*` 中的 `goal` 是给 Agent 看的说明，其中出现的路径、文件名必须与本机实际一致，否则 Agent 会输入错误路径或打开错误文件。
 3. **目录需事先存在或可创建**：保存 BMP、xyz、xlsx、csv 的目录若不存在，部分由脚本自动创建（如 data 下 xlsx/csv），而 Agent 在保存对话框里输入的路径需已存在或由用户先建好（如 `utils/bmp`、`data/file/xyz`），否则保存会失败。
 4. **参考图 2.png**：若你使用不同的“目标结构”参考图做配准，只需替换 `utils/images/solution/2.png`（或改 match.py 的 `TGT_PATH`），无需改其他路径。

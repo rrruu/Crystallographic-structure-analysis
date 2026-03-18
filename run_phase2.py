@@ -49,7 +49,7 @@ SUB_TASKS_STAGE_2 = [
         "desc": "旋转修正",
     },
     {
-        "goal": "保存结果：通过 'File' -> 'Export' ，点击File format旁边的下拉框，在下拉框中选择'.xyz'格式。之后点击OK按钮保存。在保存对话框地址栏输入 'D:\\code\\python\\AgentS_ATOMS\\data\\file\\xyz' 并回车。确认正确进入该路径后，点击右下角 '保存' 按钮。",
+        "goal": "保存结果：通过 'File' -> 'Export' ，点击File format旁边的下拉框，在下拉框中选择'.xyz'格式。之后点击OK按钮保存。在保存对话框地址栏输入 'D:\\code\\projects\\innoclaw\\data\\projects\\Crystallographic-structure-analysis-main\\data\\file\\xyz' 并回车。确认正确进入该路径后，点击右下角 '保存' 按钮。",
         "desc": "结果导出",
     },
 ]
