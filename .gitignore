@@ -121,6 +121,9 @@ celerybeat.pid
 # SageMath parsed files
 *.sage.py
 
+# 本机路径（从 paths_user.example.py 复制；勿提交）
+paths_user.py
+
 # Environments
 .env
 .venv

@@ -21,6 +21,8 @@
 |------|------|
 | **config.py** | API 配置：从环境变量 `AGENTS_ATOMS_API_KEY`、`AGENTS_ATOMS_BASE_URL` 或根目录 `.env` 读取，避免密钥写进代码。 |
 | **.env.example** | 环境变量示例；复制为 `.env` 并填入真实 API Key 与 Base URL 后使用（`.env` 已加入 .gitignore，不会提交）。 |
+| **project_paths.py** | 路径统一入口：`utils/bmp`、`data/file/...` 等相对项目根自动解析；Agent 任务文案中的路径由此生成。 |
+| **paths_user.example.py** | 本机路径模板（ATOMS 路径、第一阶段打开目录、第二阶段 .str 文件等）；复制为 **paths_user.py** 后按需修改（`paths_user.py` 已加入 .gitignore，勿提交）。未创建时回退到项目内占位路径。 |
 | **run_phase1.py** | 第一阶段完整流程入口：ATOMS 自动化 + 图像处理与配准 + 旋转/中心设置 + 坐标转换 + 切割循环。 |
 | **run_phase2.py** | 第二阶段完整流程入口：加载文件、旋转与导出 xyz → 数据处理脚本 → Agent 操作 xlsx/csv/txt 合并数据。 |
 | **test/** | 项目运行与调试过程中使用的测试文件（如 `run.py`、`run_test - 副本_1.py` 等）。 |
@@ -232,68 +234,80 @@ AGENTS_ATOMS_BASE_URL=http://34.13.73.248:3888/v1
 
 ### 5.7 路径与任务配置
 
-以下列出**需要按本机环境修改**的路径与任务文案。若将整个项目克隆到其他盘符或目录，请把所有出现的 `D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main` 替换为你的项目根目录实际路径。
+当前版本已将 `run_phase1.py` / `run_phase2.py` 中的大部分路径文案统一到 `project_paths.py`，并将“每台机器不同”的路径抽离到 `paths_user.py`（本地文件，不提交仓库）。
 
 ---
 
-#### 一、run_phase1.py 中需修改的路径（第一阶段）
+#### 一、你现在真正需要改的文件
 
-| 位置 | 说明 | 当前示例 / 变量 |
-|------|------|------------------|
-| **SUB_TASKS_STAGE_1** 第 1 条 `goal` | ATOMS 软件可执行文件路径 | `D:\ATOMS65\Eragon.exe` |
-| **SUB_TASKS_STAGE_1** 第 2 条 `goal` | 在 ATOMS 中“打开文件”时输入的**目录路径** | `D:\yan\agent\第一阶段\演示\演示8` |
-| 同上 | 要加载的 **.str 结构文件名** | `ICSD_CollCode103903.str` |
-| **SUB_TASKS_STAGE_1** 第 6 条 `goal` | 保存 BMP 图形时在保存对话框输入的**目录路径** | `D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main\utils\bmp` |
+1. **复制模板**：将 `paths_user.example.py` 复制为 `paths_user.py`。  
+2. **只改 4 个变量**（按你的电脑实际路径）：
 
-- **角度结果读取**：脚本会从 `utils/results/angle.txt` 读取旋转角度（由 `utils/match.py` 生成）。该路径由 `Path(__file__).parent / "utils" / "results" / "angle.txt"` 得到，只要项目结构不变、未移动项目根目录，一般**无需修改**。
+- `ATOMS_EXE`：ATOMS 可执行文件路径（如 `D:\ATOMS65\Eragon.exe`）
+- `PHASE1_OPEN_DIALOG_DIR`：第一阶段在 Open 对话框中要进入的目录
+- `PHASE1_STR_FILENAME`：第一阶段加载的 `.str` 文件名（仅文件名）
+- `PHASE2_STR_FILE`：第二阶段要直接打开的结构文件（可用绝对路径，也可相对项目根）
 
----
-
-#### 二、run_phase2.py 中需修改的路径（第二阶段）
-
-| 位置 | 说明 | 当前示例 / 变量 |
-|------|------|------------------|
-| **SUB_TASKS_STAGE_1** 第 1 条 `goal` | 阶段 1 要“启动/打开”的**文件路径**（当前为 .str 文件） | `D:\yan\agent\4\Pd2Ga-400-a-02.str` |
-| **SUB_TASKS_STAGE_2** 第 2 条 `goal` | 导出 xyz 时在保存对话框输入的**目录路径** | `D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main\data\file\xyz` |
-| **SUB_TASKS_STAGE_3** 第 1 条 `goal` | 要打开的 **Data transation.xlsx** 的完整路径 | `D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main\data\file\xlsx\Data transation.xlsx` |
-| **SUB_TASKS_STAGE_3** 第 2 条 `goal` | 在 xlsx/文件菜单“打开”时输入的 **csv 所在目录** | `D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main\data\file\csv` |
-| **SUB_TASKS_STAGE_3** 第 4 条 `goal` | 要打开的 **Data transation.txt** 的完整路径 | `D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main\data\file\txt\Data transation.txt` |
-
-- 若项目根目录变更，上述所有 `D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main` 均需改为新路径；文件名（如 `Data transation.xlsx`、`processed_data.csv`、`Data transation.txt`）若在脚本的 `goal` 文案中出现，也需与本地实际文件名一致。
+> `paths_user.py` 已加入 `.gitignore`，不会被提交；公开仓库时每位使用者只需保留自己的本机配置。
 
 ---
 
-#### 三、utils/ 下脚本的路径说明（相对 utils 目录，多数无需改）
+#### 二、`project_paths.py` 的职责（统一管理）
 
-| 文件 | 涉及的路径 / 文件 | 说明 |
-|------|------------------|------|
-| **image_processing.py** | `bmp/untitled.bmp` → `png/untitled.png` → `images/origin/1.png` | 以 `utils` 为根；BMP 由 Phase1 Agent 保存到 `utils/bmp`，若保存目录在 run_phase1 中改到别处，需保证此处能读到同名的 `untitled.bmp` 或同步改脚本内的文件名。 |
-| **match.py** | `images/origin/1.png`（源图）、`images/solution/2.png`（目标/参考图）、`results/` 下多种输出（angle.txt、*.csv、叠加图等） | 配准与角度计算。若使用**自己的参考图**，需替换 `utils/images/solution/2.png`，或修改脚本内 `TGT_PATH`；源图 `1.png` 由 image_processing 生成，一般不动。 |
-| **detector_transform.py** | `images/origin/1.png`、`results/blue_points_in_source_2.csv`、`results/final_screen_coords_blue.csv`、`results/final_screen_coords_purple.csv` | 依赖 match 的输出与 1.png 尺寸；路径均相对 `utils`，保持项目结构即可。 |
-| **click_executor_3.py** | `results/final_screen_coords_blue.csv`、`results/final_screen_coords_purple.csv` | 读取 detector_transform 生成的屏幕坐标；路径相对 `utils`，一般无需改。 |
+`project_paths.py` 负责两件事：
 
-- 只要**不移动** `utils` 相对项目根目录的位置，且 Phase1 把 BMP 保存到 `utils/bmp`（或在 run_phase1 中改成与 image_processing 一致），utils 内脚本**通常不需改路径**。
+- **项目内固定路径**（相对仓库根）
+  - `utils/bmp`
+  - `data/file/xyz`
+  - `data/file/xlsx`
+  - `data/file/csv`
+  - `data/file/txt`
+- **生成给 Agent 的任务文案**
+  - `build_phase1_subtasks_stage_1()`
+  - `build_phase2_subtasks_stage_1()`
+  - `build_phase2_subtasks_stage_2()`
+  - `build_phase2_subtasks_stage_3()`
 
----
-
-#### 四、data/ 下脚本的路径说明（相对 data 目录，多数无需改）
-
-| 文件 | 涉及的路径 / 文件 | 说明 |
-|------|------------------|------|
-| **data.py** | 输入：`file/xyz/untitled.xyz`；输出：`file/xyz/processed.xyz` | Phase2 中 Agent 将 xyz 导出到 `data/file/xyz` 时，默认文件名为 ATOMS 保存对话框所定；若实际文件名不是 `untitled.xyz`，需改 data.py 内 `input_path`。 |
-| **convert_to_xlsx.py** | 输入：`file/xyz/processed.xyz`；输出：`file/xlsx/processed_data.xlsx`、`file/csv/processed_data.csv` | 依赖 data.py 的输出；路径均相对 `data`，一般无需改。 |
-| **update_path.py** | 目标文件：`file/txt/Data transation.txt` | 将该 txt 首行更新为“file|绝对路径”；路径相对 `data`，一般无需改。 |
-
-- 若把 xyz / xlsx / csv / txt 放到 `data/file/` 以外的目录，需在对应脚本中修改 `base_dir` 或拼接出的路径。
+这意味着：你不再需要在 `run_phase1.py` / `run_phase2.py` 里手工改一堆绝对路径。
 
 ---
 
-#### 五、修改时的注意点
+#### 三、两阶段脚本现在从哪里取路径
 
-1. **统一替换项目根路径**：若项目不在 `D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main`，在 **run_phase1.py** 与 **run_phase2.py** 中全文搜索 `D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main`，替换为你的项目根目录（注意 Windows 下反斜杠在字符串中须写为 `\\` 或使用原始字符串 `r"..."`）。
-2. **Agent 任务文案与真实路径一致**：`SUB_TASKS_STAGE_*` 中的 `goal` 是给 Agent 看的说明，其中出现的路径、文件名必须与本机实际一致，否则 Agent 会输入错误路径或打开错误文件。
-3. **目录需事先存在或可创建**：保存 BMP、xyz、xlsx、csv 的目录若不存在，部分由脚本自动创建（如 data 下 xlsx/csv），而 Agent 在保存对话框里输入的路径需已存在或由用户先建好（如 `utils/bmp`、`data/file/xyz`），否则保存会失败。
-4. **参考图 2.png**：若你使用不同的“目标结构”参考图做配准，只需替换 `utils/images/solution/2.png`（或改 match.py 的 `TGT_PATH`），无需改其他路径。
+- `run_phase1.py`
+  - `SUB_TASKS_STAGE_1 = build_phase1_subtasks_stage_1()`
+  - `angle.txt` 读取路径：`PROJECT_ROOT / "utils" / "results" / "angle.txt"`
+- `run_phase2.py`
+  - `SUB_TASKS_STAGE_1 = build_phase2_subtasks_stage_1()`
+  - `SUB_TASKS_STAGE_2 = build_phase2_subtasks_stage_2()`
+  - `SUB_TASKS_STAGE_3 = build_phase2_subtasks_stage_3()`
+
+---
+
+#### 四、哪些路径仍可能需要你按项目需求调整
+
+这些路径在代码里是“统一管理”了，但如果你改了业务输入输出习惯，仍需在对应文件改一次：
+
+- `project_paths.py`
+  - `PHASE2_ROTATION_ANGLE`（默认 90）
+  - `DATA_TRANSACTION_XLSX`、`DATA_TRANSACTION_TXT`、`PROCESSED_CSV`（若文件名变化）
+- `data/data.py`
+  - 默认读取 `data/file/xyz/untitled.xyz`；若 ATOMS 导出文件名不是 `untitled.xyz`，需改这里
+- `utils/match.py`
+  - 目标参考图默认 `utils/images/solution/2.png`；如果换参考图，需替换该文件或改 `TGT_PATH`
+
+---
+
+#### 五、给新用户的最小配置步骤（可直接写在仓库说明里）
+
+1. `git clone` 后进入项目根目录。  
+2. 复制 `.env.example` 为 `.env`，填写 `AGENTS_ATOMS_API_KEY` 与 `AGENTS_ATOMS_BASE_URL`。  
+3. 复制 `paths_user.example.py` 为 `paths_user.py`，填写本机路径。  
+4. 运行：
+   - `python run_phase1.py`
+   - `python run_phase2.py`
+
+这样即可避免“下载后要到处改绝对路径”的问题。
 
 ---
 

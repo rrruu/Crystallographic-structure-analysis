@@ -13,38 +13,14 @@ from gui_agents.s3.agents.agent_s import AgentS3
 
 # ================= 1. 基础配置 =================
 from config import API_KEY, BASE_URL, check_api_config
+from project_paths import PROJECT_ROOT, build_phase1_subtasks_stage_1
 
 SCREEN_WIDTH, SCREEN_HEIGHT = 1920, 1080
 GROUNDING_DIM = 1000
 
 # ================= 2. 自动化任务流配置 =================
-# 阶段 1：初始设置与保存图片 (原有逻辑)
-SUB_TASKS_STAGE_1 = [
-    {
-        "goal": "启动位于 'D:\\ATOMS65\\Eragon.exe' 的 ATOMS 软件，并确保主窗口处于最大化状态。",
-        "desc": "环境初始化",
-    },
-    {
-        "goal": "在 ATOMS 软件中点击 'Open'。在弹出的对话框地址栏输入 'D:\\yan\\agent\\第一阶段\\演示\\演示8' 并回车。确认正确进入该路径后，加载文件 'ICSD_CollCode103903.str'，直到结构图显示在主窗口中。",
-        "desc": "数据加载",
-    },
-    {
-        "goal": "配置物理边界：在 'Input1' 菜单下打开 'Boundary' 选项，将模式更改为 'Sphere'，并将 'Radius' 数值修改为 45。完成后确认并返回主界面。",
-        "desc": "边界配置",
-    },
-    {
-        "goal": "空间取向调整：打开顶部 'Rotation' 菜单，选择 'Align Face or Vector'。重点：确保选中左侧的 'Vector' 单选按钮，并在 'Indices of vector (uvw)' 下方的三个输入框中依次填入 1、0、0。完成后点击右上方 OK 确认。",
-        "desc": "取向设置",
-    },
-    {
-        "goal": "视图效果优化：首先进入 'Input2' 菜单关闭 'Perspective' 视图选项。随后再次进入 'Input2' 打开 'Background Color' 窗口，将Background Color设置为白色（255 255 255）。操作路径：点击窗口右侧的 'Select Color...' 按钮，在弹出的调色板中直接点击选中255 255 255左侧单选按钮，点击 OK 返回后再在背景窗口点击 OK。",
-        "desc": "背景与视觉优化",
-    },
-    {
-        "goal": "保存结果：通过 'File' -> 'Save Graphics Window' 选 '.BMP' 格式。在保存对话框地址栏输入 'D:\\code\\projects\\innoclaw\\data\\projects\\Crystallographic-structure-analysis-main\\utils\\bmp' 并回车。确认正确进入该路径后，点击右下角 '保存' 按钮。",
-        "desc": "结果导出",
-    },
-]
+# 阶段 1：路径由 project_paths / paths_user 统一生成（见 paths_user.example.py）
+SUB_TASKS_STAGE_1 = build_phase1_subtasks_stage_1()
 
 
 # 阶段 2：根据 match.py 结果进行二次设置 (新增逻辑)
@@ -362,7 +338,7 @@ def main():
     # pyautogui.click(678, 1062)
 
     # 读取旋转角度
-    angle_file = Path(__file__).resolve().parent / "utils" / "results" / "angle.txt"
+    angle_file = PROJECT_ROOT / "utils" / "results" / "angle.txt"
     angle = "284.0"  # 默认值
     if angle_file.exists():
         angle = angle_file.read_text().strip()

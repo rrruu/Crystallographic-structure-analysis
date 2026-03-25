@@ -13,6 +13,11 @@ from gui_agents.s3.agents.agent_s import AgentS3
 
 # ================= 1. 基础配置 =================
 from config import API_KEY, BASE_URL, check_api_config
+from project_paths import (
+    build_phase2_subtasks_stage_1,
+    build_phase2_subtasks_stage_2,
+    build_phase2_subtasks_stage_3,
+)
 
 SCREEN_WIDTH, SCREEN_HEIGHT = 1920, 1080
 GROUNDING_DIM = 1000
@@ -22,62 +27,10 @@ GROUNDING_WIDTH = 1920
 GROUNDING_HEIGHT = 1080
 
 # ================= 2. 自动化任务流配置 =================
-# 阶段 1：初始设置与保存图片 (原有逻辑)
-# SUB_TASKS_STAGE_1 = [
-#     {
-#         "goal": "启动位于 'D:\\ATOMS65\\Eragon.exe' 的 ATOMS 软件，并确保主窗口处于最大化状态。",
-#         "desc": "环境初始化"
-#     },
-#     {
-#         "goal": "在 ATOMS 软件中点击 'Open'。在弹出的对话框地址栏输入 'D:\\yan\\agent\\第二阶段_测试' 并回车。确认正确进入该路径后，加载文件 'Pd2Ga-400-a-02.str'，直到结构图显示在主窗口中。",
-#         "desc": "数据加载"
-#     }
-#
-# ]
-SUB_TASKS_STAGE_1 = [
-    {
-        "goal": "启动位于 'D:\\yan\\agent\\4\\Pd2Ga-400-a-02.str' 的 文件。",
-        "desc": "数据加载",
-    }
-]
-
-
-# 阶段 2：
-SUB_TASKS_STAGE_2 = [
-    {
-        "goal": f"双击界面左侧的角度输入框。在输入框内填入数字 90 。完成后，依次点击：1. 第二排右侧的向上箭头按钮（↑）；2. 第三排右侧的向左箭头按钮（←，即指向左侧但位于右边的按钮）。",
-        "desc": "旋转修正",
-    },
-    {
-        "goal": "保存结果：通过 'File' -> 'Export' ，点击File format旁边的下拉框，在下拉框中选择'.xyz'格式。之后点击OK按钮保存。在保存对话框地址栏输入 'D:\\code\\projects\\innoclaw\\data\\projects\\Crystallographic-structure-analysis-main\\data\\file\\xyz' 并回车。确认正确进入该路径后，点击右下角 '保存' 按钮。",
-        "desc": "结果导出",
-    },
-]
-
-
-# 阶段 3：用Data transaction.txt打开csv文件
-SUB_TASKS_STAGE_3 = [
-    {
-        "goal": "启动位于 'D:\\code\\projects\\innoclaw\\data\\projects\\Crystallographic-structure-analysis-main\\data\\file\\xlsx\\Data transation.xlsx' 的 Data transation.xlsx 文件。",
-        "desc": "打开xlsx文件",
-    },
-    {
-        "goal": "在 '文件' 菜单下打开 '打开' 选项，在弹出的对话框地址栏输入 'D:\\code\\projects\\innoclaw\\data\\projects\\Crystallographic-structure-analysis-main\\data\\file\\csv' 地址并回车。确认正确进入该路径后，选择文件类型为 '所有文件' ，打开文件 'processed_data.csv' 。",
-        "desc": "在xlsx文件中打开csv文件",
-    },
-    {
-        "goal": "在 'processed_data.csv' 文件中，全选并复制表格中的所有内容。",
-        "desc": "复制csv文件中全部数据",
-    },
-    {
-        "goal": "打开 'D:\\code\\projects\\innoclaw\\data\\projects\\Crystallographic-structure-analysis-main\\data\\file\\txt\\Data transation.txt'，在文件末尾的新一行中粘贴刚刚在'processed_data.csv' 文件中复制的内容。",
-        "desc": "将数据追加到目标文本文件",
-    },
-    {
-        "goal": "保存并关闭 'Data transation.txt'。关闭 'Data transation.xlsx' 和 'processed_data.csv' 窗口，且不对 'Data transation.xlsx' 和 'processed_data.csv' 进行保存。",
-        "desc": "保存并清理工作环境",
-    },
-]
+# 路径由 project_paths / paths_user 统一生成（见 paths_user.example.py）
+SUB_TASKS_STAGE_1 = build_phase2_subtasks_stage_1()
+SUB_TASKS_STAGE_2 = build_phase2_subtasks_stage_2()
+SUB_TASKS_STAGE_3 = build_phase2_subtasks_stage_3()
 
 
 # ================= 3. 通用辅助函数 =================
