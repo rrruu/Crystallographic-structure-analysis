@@ -21,18 +21,18 @@ system: |
 ## 固定环境
 
 - Python: `D:\anaconda\envs\agents_a\python.exe`
-- Project: `D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main`
-- Results: `D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main\utils\results`
+- Project: `D:\code\projects\AuraID\data\projects\Crystallographic-structure-analysis`
+- Results: `D:\code\projects\AuraID\data\projects\Crystallographic-structure-analysis\utils\results`
 
 ## 唯一执行流程（必须严格按顺序）
 
 ### Step 0: 先检查状态（只读检查）
 
 ```cmd
-cmd /c "if exist D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main\utils\results\phase1.lock echo PHASE1_LOCK=1"
-cmd /c "if exist D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main\utils\results\phase1.done echo PHASE1_DONE=1"
-cmd /c "if exist D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main\utils\results\phase2.lock echo PHASE2_LOCK=1"
-cmd /c "if exist D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main\utils\results\phase2.done echo PHASE2_DONE=1"
+cmd /c "if exist D:\code\projects\AuraID\data\projects\Crystallographic-structure-analysis\utils\results\phase1.lock echo PHASE1_LOCK=1"
+cmd /c "if exist D:\code\projects\AuraID\data\projects\Crystallographic-structure-analysis\utils\results\phase1.done echo PHASE1_DONE=1"
+cmd /c "if exist D:\code\projects\AuraID\data\projects\Crystallographic-structure-analysis\utils\results\phase2.lock echo PHASE2_LOCK=1"
+cmd /c "if exist D:\code\projects\AuraID\data\projects\Crystallographic-structure-analysis\utils\results\phase2.done echo PHASE2_DONE=1"
 ```
 
 判定规则：
@@ -42,14 +42,14 @@ cmd /c "if exist D:\code\projects\innoclaw\data\projects\Crystallographic-struct
 ### Step 1: 仅在 `phase1.done` 不存在时执行 Phase1
 
 ```cmd
-cmd /c "if not exist D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main\utils\results\phase1.done D:\anaconda\envs\agents_a\python.exe D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main\run_phase1.py"
+cmd /c "if not exist D:\code\projects\AuraID\data\projects\Crystallographic-structure-analysis\utils\results\phase1.done D:\anaconda\envs\agents_a\python.exe D:\code\projects\AuraID\data\projects\Crystallographic-structure-analysis\run_phase1.py"
 ```
 
 Phase1 结束后必须检查：
 
 ```cmd
-cmd /c "if exist D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main\utils\results\phase1.done echo PHASE1_OK"
-cmd /c "if exist D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main\utils\results\phase1.fail echo PHASE1_FAIL"
+cmd /c "if exist D:\code\projects\AuraID\data\projects\Crystallographic-structure-analysis\utils\results\phase1.done echo PHASE1_OK"
+cmd /c "if exist D:\code\projects\AuraID\data\projects\Crystallographic-structure-analysis\utils\results\phase1.fail echo PHASE1_FAIL"
 ```
 
 规则：
@@ -59,14 +59,14 @@ cmd /c "if exist D:\code\projects\innoclaw\data\projects\Crystallographic-struct
 ### Step 2: 仅在 `phase2.done` 不存在时执行 Phase2
 
 ```cmd
-cmd /c "if not exist D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main\utils\results\phase2.done D:\anaconda\envs\agents_a\python.exe D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main\run_phase2.py"
+cmd /c "if not exist D:\code\projects\AuraID\data\projects\Crystallographic-structure-analysis\utils\results\phase2.done D:\anaconda\envs\agents_a\python.exe D:\code\projects\AuraID\data\projects\Crystallographic-structure-analysis\run_phase2.py"
 ```
 
 Phase2 结束后必须检查：
 
 ```cmd
-cmd /c "if exist D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main\utils\results\phase2.done echo PHASE2_OK"
-cmd /c "if exist D:\code\projects\innoclaw\data\projects\Crystallographic-structure-analysis-main\utils\results\phase2.fail echo PHASE2_FAIL"
+cmd /c "if exist D:\code\projects\AuraID\data\projects\Crystallographic-structure-analysis\utils\results\phase2.done echo PHASE2_OK"
+cmd /c "if exist D:\code\projects\AuraID\data\projects\Crystallographic-structure-analysis\utils\results\phase2.fail echo PHASE2_FAIL"
 ```
 
 规则：
