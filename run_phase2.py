@@ -1,6 +1,7 @@
 import os
 import re
 import time
+import atexit
 import pyautogui
 import pyperclip
 import io
@@ -14,6 +15,7 @@ from gui_agents.s3.agents.agent_s import AgentS3
 # ================= 1. 基础配置 =================
 from config import API_KEY, BASE_URL, check_api_config
 from project_paths import (
+    PROJECT_ROOT,
     build_phase2_subtasks_stage_1,
     build_phase2_subtasks_stage_2,
     build_phase2_subtasks_stage_3,
@@ -25,6 +27,12 @@ GROUNDING_DIM = 1000
 # 建议不再统一使用 GROUNDING_DIM，而是分设宽和高
 GROUNDING_WIDTH = 1920
 GROUNDING_HEIGHT = 1080
+RESULTS_DIR = PROJECT_ROOT / "utils" / "results"
+PHASE1_DONE_FILE = RESULTS_DIR / "phase1.done"
+PHASE1_LOCK_FILE = RESULTS_DIR / "phase1.lock"
+PHASE2_LOCK_FILE = RESULTS_DIR / "phase2.lock"
+PHASE2_DONE_FILE = RESULTS_DIR / "phase2.done"
+PHASE2_FAIL_FILE = RESULTS_DIR / "phase2.fail"
 
 # ================= 2. 自动化任务流配置 =================
 # 路径由 project_paths / paths_user 统一生成（见 paths_user.example.py）
@@ -34,6 +42,62 @@ SUB_TASKS_STAGE_3 = build_phase2_subtasks_stage_3()
 
 
 # ================= 3. 通用辅助函数 =================
+def _pid_running(pid: int) -> bool:
+    try:
+        os.kill(pid, 0)
+        return True
+    except OSError:
+        return False
+
+
+def acquire_phase_lock():
+    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    if PHASE2_LOCK_FILE.exists():
+        old_pid = None
+        try:
+            old_pid = int(PHASE2_LOCK_FILE.read_text(encoding="utf-8").strip())
+        except Exception:
+            old_pid = None
+        if old_pid and _pid_running(old_pid):
+            raise RuntimeError(
+                f"检测到 run_phase2.py 已在运行（PID={old_pid}）。为避免重复执行，本次退出。"
+            )
+        print("[警告] 检测到陈旧 phase2.lock，已自动清理。")
+        PHASE2_LOCK_FILE.unlink(missing_ok=True)
+
+    PHASE2_LOCK_FILE.write_text(str(os.getpid()), encoding="utf-8")
+    atexit.register(release_phase_lock)
+
+
+def release_phase_lock():
+    PHASE2_LOCK_FILE.unlink(missing_ok=True)
+
+
+def ensure_phase1_ready():
+    if PHASE1_LOCK_FILE.exists():
+        raise RuntimeError("检测到 phase1.lock，Phase 1 可能仍在执行。请等待其结束后再运行 Phase 2。")
+    if not PHASE1_DONE_FILE.exists():
+        raise RuntimeError("未检测到 phase1.done，拒绝执行 Phase 2。请先成功完成 run_phase1.py。")
+
+
+def mark_phase_done():
+    PHASE2_DONE_FILE.write_text(
+        f"status=success\npid={os.getpid()}\ntime={time.strftime('%Y-%m-%d %H:%M:%S')}\n",
+        encoding="utf-8",
+    )
+    PHASE2_FAIL_FILE.unlink(missing_ok=True)
+
+
+def mark_phase_fail(err: Exception):
+    PHASE2_FAIL_FILE.write_text(
+        (
+            f"status=failed\npid={os.getpid()}\ntime={time.strftime('%Y-%m-%d %H:%M:%S')}\n"
+            f"error={repr(err)}\n"
+        ),
+        encoding="utf-8",
+    )
+
+
 def run_python_script(script_name, args=[]):
     data_dir = Path(__file__).resolve().parent / "data"
     script_path = data_dir / script_name
@@ -233,21 +297,30 @@ def execute_agent_tasks_withoutctrla(tasks):
 
 # ================= 4. 主流程 =================
 def main():
+    ensure_phase1_ready()
+    acquire_phase_lock()
+    PHASE2_DONE_FILE.unlink(missing_ok=True)
+    PHASE2_FAIL_FILE.unlink(missing_ok=True)
     check_api_config()
-    # 1. 第一部分自动化
-    execute_agent_tasks(SUB_TASKS_STAGE_1)
+    try:
+        # 1. 第一部分自动化
+        execute_agent_tasks(SUB_TASKS_STAGE_1)
 
-    # 2. 第二部分自动化
-    execute_agent_tasks_withoutctrla(SUB_TASKS_STAGE_2)
+        # 2. 第二部分自动化
+        execute_agent_tasks_withoutctrla(SUB_TASKS_STAGE_2)
 
-    # 3. python实现文件处理操作，依次调用data/data.py,data/convert_to_xlsx.py,data/update_path.py这三个python文件
-    run_python_script("data.py")
-    run_python_script("convert_to_xlsx.py")
-    run_python_script("update_path.py")
+        # 3. python实现文件处理操作，依次调用data/data.py,data/convert_to_xlsx.py,data/update_path.py这三个python文件
+        run_python_script("data.py")
+        run_python_script("convert_to_xlsx.py")
+        run_python_script("update_path.py")
 
-    # 4. 第三部分自动化
-    execute_agent_tasks(SUB_TASKS_STAGE_3)
-    print("\n>>> [完成] 全流程自动化已结束。")
+        # 4. 第三部分自动化
+        execute_agent_tasks(SUB_TASKS_STAGE_3)
+        mark_phase_done()
+        print("\n>>> [完成] 全流程自动化已结束。")
+    except Exception as e:
+        mark_phase_fail(e)
+        raise
 
 
 if __name__ == "__main__":

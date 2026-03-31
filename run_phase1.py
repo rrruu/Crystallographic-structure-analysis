@@ -1,6 +1,7 @@
 import os
 import re
 import time
+import atexit
 import pyautogui
 import pyperclip
 import io
@@ -17,6 +18,10 @@ from project_paths import PROJECT_ROOT, build_phase1_subtasks_stage_1
 
 SCREEN_WIDTH, SCREEN_HEIGHT = 1920, 1080
 GROUNDING_DIM = 1000
+RESULTS_DIR = PROJECT_ROOT / "utils" / "results"
+PHASE1_LOCK_FILE = RESULTS_DIR / "phase1.lock"
+PHASE1_DONE_FILE = RESULTS_DIR / "phase1.done"
+PHASE1_FAIL_FILE = RESULTS_DIR / "phase1.fail"
 
 # ================= 2. 自动化任务流配置 =================
 # 阶段 1：路径由 project_paths / paths_user 统一生成（见 paths_user.example.py）
@@ -57,6 +62,55 @@ CUT_PARTS = ["A", "B", "UPPER", "LOWER"]
 
 
 # ================= 3. 通用辅助函数 =================
+def _pid_running(pid: int) -> bool:
+    try:
+        os.kill(pid, 0)
+        return True
+    except OSError:
+        return False
+
+
+def acquire_phase_lock():
+    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    if PHASE1_LOCK_FILE.exists():
+        old_pid = None
+        try:
+            old_pid = int(PHASE1_LOCK_FILE.read_text(encoding="utf-8").strip())
+        except Exception:
+            old_pid = None
+        if old_pid and _pid_running(old_pid):
+            raise RuntimeError(
+                f"检测到 run_phase1.py 已在运行（PID={old_pid}）。为避免重复执行，本次退出。"
+            )
+        print("[警告] 检测到陈旧 phase1.lock，已自动清理。")
+        PHASE1_LOCK_FILE.unlink(missing_ok=True)
+
+    PHASE1_LOCK_FILE.write_text(str(os.getpid()), encoding="utf-8")
+    atexit.register(release_phase_lock)
+
+
+def release_phase_lock():
+    PHASE1_LOCK_FILE.unlink(missing_ok=True)
+
+
+def mark_phase_done():
+    PHASE1_DONE_FILE.write_text(
+        f"status=success\npid={os.getpid()}\ntime={time.strftime('%Y-%m-%d %H:%M:%S')}\n",
+        encoding="utf-8",
+    )
+    PHASE1_FAIL_FILE.unlink(missing_ok=True)
+
+
+def mark_phase_fail(err: Exception):
+    PHASE1_FAIL_FILE.write_text(
+        (
+            f"status=failed\npid={os.getpid()}\ntime={time.strftime('%Y-%m-%d %H:%M:%S')}\n"
+            f"error={repr(err)}\n"
+        ),
+        encoding="utf-8",
+    )
+
+
 def run_python_script(script_name, args=[]):
     utils_dir = Path(__file__).resolve().parent / "utils"
     script_path = utils_dir / script_name
@@ -326,57 +380,57 @@ def execute_agent_tasks_withoutctrla(tasks):
 
 # ================= 4. 主流程 =================
 def main():
+    acquire_phase_lock()
+    PHASE1_DONE_FILE.unlink(missing_ok=True)
+    PHASE1_FAIL_FILE.unlink(missing_ok=True)
     check_api_config()
-    # 1. 第一部分自动化
-    execute_agent_tasks(SUB_TASKS_STAGE_1)
+    try:
+        # 1. 第一部分自动化
+        execute_agent_tasks(SUB_TASKS_STAGE_1)
 
-    # 2. 图像处理与配准
-    run_python_script("image_processing.py")
-    run_python_script("match.py")
+        # 2. 图像处理与配准
+        run_python_script("image_processing.py")
+        run_python_script("match.py")
 
-    # #test
-    # pyautogui.click(678, 1062)
+        # 读取旋转角度
+        angle_file = PROJECT_ROOT / "utils" / "results" / "angle.txt"
+        angle = "284.0"  # 默认值
+        if angle_file.exists():
+            angle = angle_file.read_text().strip()
 
-    # 读取旋转角度
-    angle_file = PROJECT_ROOT / "utils" / "results" / "angle.txt"
-    angle = "284.0"  # 默认值
-    if angle_file.exists():
-        angle = angle_file.read_text().strip()
+        # 3. 第二部分自动化：旋转与中心设置
+        execute_agent_tasks_withoutctrla(get_stage_2_tasks(angle))
 
-    # 3. 第二部分自动化：旋转与中心设置
-    execute_agent_tasks_withoutctrla(get_stage_2_tasks(angle))
+        # 4. 实时探测并转换坐标
+        run_python_script("detector_transform.py")
 
-    # 4. 实时探测并转换坐标
-    run_python_script("detector_transform.py")
+        # 5. 第三部分：切割循环
+        for part in CUT_PARTS:
+            print(f"\n>>> 开始切割部分: {part}")
+            execute_agent_tasks(
+                [
+                    {
+                        "goal": "点击主界面右侧的 'Delete Tool' 按钮，在弹出的提示窗口中点击 '确定' 以开始切割模式。",
+                        "desc": "启动切割工具",
+                    }
+                ]
+            )
+            run_python_script("click_executor_3.py", [part])
+            execute_agent_tasks(
+                [
+                    {
+                        "goal": "点击界面中出现的 '确认' 按钮以完成本次切割操作。",
+                        "desc": "确认切割成果",
+                    }
+                ]
+            )
+            time.sleep(2)
 
-    # 5. 第三部分：切割循环
-    for part in CUT_PARTS:
-        print(f"\n>>> 开始切割部分: {part}")
-        # Agent: 开启 Delete Tool
-        execute_agent_tasks(
-            [
-                {
-                    "goal": "点击主界面右侧的 'Delete Tool' 按钮，在弹出的提示窗口中点击 '确定' 以开始切割模式。",
-                    "desc": "启动切割工具",
-                }
-            ]
-        )
-
-        # 脚本: 执行路径点击
-        run_python_script("click_executor_3.py", [part])
-
-        # Agent: 确认切割
-        execute_agent_tasks(
-            [
-                {
-                    "goal": "点击界面中出现的 '确认' 按钮以完成本次切割操作。",
-                    "desc": "确认切割成果",
-                }
-            ]
-        )
-        time.sleep(2)
-
-    print("\n>>> [完成] 全流程自动化已结束。")
+        mark_phase_done()
+        print("\n>>> [完成] 全流程自动化已结束。")
+    except Exception as e:
+        mark_phase_fail(e)
+        raise
 
 
 if __name__ == "__main__":
