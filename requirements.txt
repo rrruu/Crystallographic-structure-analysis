@@ -1,23 +1,54 @@
-numpy
-backoff
-pandas
-openai
-anthropic
-fastapi
-uvicorn
-paddleocr
-paddlepaddle
-together
-scikit-learn
-websockets
-tiktoken
-pyautogui
-toml
-black
-pytesseract
-google-genai
+# Python 3.10+（与 D:\anaconda\envs\agents_a 中 pip freeze 对齐，便于复现）
+# 安装：在仓库根目录执行  pip install -r requirements.txt
+# 本仓库代码以包名 gui_agents 形式使用，可另执行  pip install -e .
 
-# Platform-specific dependencies
-pyobjc; platform_system == "Darwin"
-pywinauto; platform_system == "Windows"
-pywin32; platform_system == "Windows" 
+# ----- LLM / API -----
+anthropic==0.74.1
+backoff==2.2.1
+google-genai==1.52.0
+openai==2.8.1
+together==1.5.30
+
+# ----- Web / 服务 -----
+fastapi==0.121.3
+uvicorn==0.38.0
+pydantic==2.12.4
+requests==2.32.5
+websockets==15.0.1
+
+# ----- 数值与表格 -----
+numpy==2.2.6
+pandas==2.3.3
+scikit-learn==1.7.2
+scipy==1.15.3
+openpyxl==3.1.5
+
+# ----- 图像 / OCR -----
+opencv-contrib-python==4.10.0.84
+paddleocr==3.3.2
+paddlepaddle==3.2.2
+pillow==11.3.0
+pytesseract==0.3.13
+
+# ----- 桌面自动化与浏览器 -----
+pyautogui==0.9.54
+pyperclip==1.11.0
+selenium==4.38.0
+tiktoken==0.12.0
+toml==0.10.2
+psutil==7.1.3
+tqdm==4.67.1
+
+# ----- 开发工具（可选）-----
+black==25.11.0
+
+# ----- 平台相关 -----
+pyobjc>=11.0; platform_system == "Darwin"
+pywinauto==0.6.9; platform_system == "Windows"
+pywin32==311; platform_system == "Windows"
+
+# ----- OSWorld 评测脚本（osworld_setup/）额外依赖 -----
+# 当前 agents_a 的 pip 环境中未安装下列包；若需运行 osworld_setup 下脚本，请取消注释或单独安装：
+# python-dotenv>=1.0.0
+# wrapt-timeout-decorator>=1.3.1
+# desktop_env 需从 OSWorld 工程安装或加入 PYTHONPATH，无固定 PyPI 包名
